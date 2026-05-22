@@ -1,20 +1,26 @@
 # ytxt
 
-A local, private CLI tool for transcribing YouTube videos using `faster-whisper`. No external APIs, all processing happens on your machine.
+`ytxt` is a local, private CLI tool for transcribing YouTube videos using `faster-whisper`. All processing happens securely on your machine—no external APIs or cloud services required.
 
 ## Installation
+
+Ensure you have `ffmpeg` installed on your system. Then, install the project:
+
+```bash
+pip install .
+```
+
+Alternatively, if you are running from the source:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-*Note: You must have `ffmpeg` installed on your system for audio extraction.*
-
 ## Usage
 
 Basic usage:
 ```bash
-python src/main.py <youtube_url>
+ytxt <youtube_url_or_local_file_path>
 ```
 
 ### Options
@@ -27,19 +33,19 @@ python src/main.py <youtube_url>
 
 ### Examples
 
-**Save as Markdown with timestamps:**
+**Save as Markdown with timestamps (YouTube):**
 ```bash
-python src/main.py https://www.youtube.com/watch?v=VIDEO_ID --format markdown --timestamps --output transcript.md
+ytxt https://www.youtube.com/watch?v=VIDEO_ID --format markdown --timestamps --output transcript.md
 ```
 
-**Get SRT for subtitles:**
+**Transcribe a local audio file:**
 ```bash
-python src/main.py https://www.youtube.com/watch?v=VIDEO_ID --format srt --output subtitles.srt
+ytxt path/to/audio.mp3 --model medium --output transcript.txt
 ```
 
 ## Features
 
-- **Local-Only:** No data leaves your machine.
-- **Caching:** Automatically caches transcripts by video ID.
+- **Local-Only:** Privacy-first; no data leaves your machine.
+- **Caching:** Efficiently caches results by video ID to avoid redundant work.
 - **Formats:** Supports text, Markdown, SRT, and JSON.
-- **Configurable:** Choose your own model and output destination.
+- **Model Selection:** Flexibility to balance accuracy and performance by choosing your desired Whisper model size.
