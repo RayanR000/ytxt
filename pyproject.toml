@@ -17,5 +17,8 @@ dependencies = [
     "argparse",
 ]
 
+[project.scripts]
+ytxt = "ytxt.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
