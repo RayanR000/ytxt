@@ -1,1 +1,45 @@
 # ytxt
+
+A local, private CLI tool for transcribing YouTube videos using `faster-whisper`. No external APIs, all processing happens on your machine.
+
+## Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+*Note: You must have `ffmpeg` installed on your system for audio extraction.*
+
+## Usage
+
+Basic usage:
+```bash
+python src/main.py <youtube_url>
+```
+
+### Options
+
+- `--format [text|markdown|srt|json]`: Specify output format.
+- `--model [base|small|medium|large]`: Choose the Whisper model size.
+- `--timestamps`: Include start and end times in text/markdown output.
+- `--output <path>`: Save the transcript to a file.
+- `--no-cache`: Force a re-transcription by ignoring existing cache.
+
+### Examples
+
+**Save as Markdown with timestamps:**
+```bash
+python src/main.py https://www.youtube.com/watch?v=VIDEO_ID --format markdown --timestamps --output transcript.md
+```
+
+**Get SRT for subtitles:**
+```bash
+python src/main.py https://www.youtube.com/watch?v=VIDEO_ID --format srt --output subtitles.srt
+```
+
+## Features
+
+- **Local-Only:** No data leaves your machine.
+- **Caching:** Automatically caches transcripts by video ID.
+- **Formats:** Supports text, Markdown, SRT, and JSON.
+- **Configurable:** Choose your own model and output destination.
