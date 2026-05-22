@@ -12,13 +12,13 @@ def parse_args():
     parser.add_argument("--no-cache", action="store_true", help="Skip cache usage")
     
     return parser.parse_args()
-
+import argparse
 import sys
 from pathlib import Path
-from downloader import download_audio
-from transcriber import transcribe_audio
-from formatter import format_transcript
-from cache import read_cache, write_cache
+from .downloader import download_audio
+from .transcriber import transcribe_audio
+from .formatter import format_transcript
+from .cache import read_cache, write_cache
 
 def parse_args():
     parser = argparse.ArgumentParser(description="ytxt: Local YouTube transcript CLI")
