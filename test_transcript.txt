@@ -1,0 +1,186 @@
+In this video, I will attempt to create my own LLM from scratch, no fine tuning, nothing,
+just completely from my own data, and for a creative twist, I will try to make it only speak
+pirate language. Personally, I've been wanting to build my own LLM for a while. However,
+I always thought that it would be a super expensive and a huge project, but the entire project at the
+end just costed me around 70 cents of GPU costs and about three days of work. I have nothing to
+sell, I just wanted to share the process and hopefully inspire others to build it themselves,
+and to really make this a learning project, I refrained from overusing LLM for the code.
+I was allowed to copy paste, but no coding harness like codecs or cloud code. This is to hopefully
+understand the deeper. So let's begin day one. Before going into this project, I spent some time
+studying deeper how LLMs are made using cloud. My goal was mostly to get an overview and fill in the
+gaps that I might have. Since I kind of knew already how LLMs worked, just because I studied AI,
+however, we really never went deep into the exact architecture and training methodologies of
+modern LLMs. So after about one hour or so of studying, I got a rough understanding of the steps
+we need to follow to make this work. The first thing we have to do is build our vocabulary through
+tokenization. For simplicity, you can think of it as just simply assigning a number to a specific word.
+Therefore, being able to translate text into something numerical, which you know, like an LLM
+could actually learn from. What's important is that after tokenization, we never change the vocabulary
+or else the entire model needs to retrain. This becomes the input of the neural network.
+What the neural network like the actual architecture actually does is try to predict the
+probability of each token given what came before. Then based on this model, we would basically tune
+it on instructions. This is to hopefully teach it to have normal conversations. And this is usually
+done with a lot smaller learning rate and a far smaller subset of data to hopefully not disturb
+the base model all too much. And that is actually kind of it, you know, you first build a dictionary,
+then based on the dictionary and your training data, you basically build the model. And then
+you just add a final layer of instruction tuning on top to make it behave like a chatbot and not
+like an auto complete. So yeah, now that we roughly have an idea of what we have to do, we can now start
+the actual project in day two. Day two. I began the day with researching some data sets that I could
+use for this project. And basically, I came up with two main ways. Either I somehow find enough
+text which is already in pirate language or I train the model in just normal English and then
+try to instruct tune it to only speak in pirate language. But I really wanted to try the first
+option. So I went to see if there are already some data sets that I could use. However, while doing
+so I found this library called R in Python which turns text into pirate language using, you know,
+like a rule based system. So I wanted to try it out immediately. However, I noticed that putting this
+on top of an already trained LLM would have basically done what I wanted to do in the first place.
+Nevertheless, I still just continued my work on my LLM as it's just mostly proving myself that I
+can do it. And also in the last video I talked about ticking off the engineer bucket lists and I guess
+in a way creating your LLM maybe also is part of, you know, ticking off that bucket list.
+Now I found this data set called Tiny Stories which includes around two million small stories
+in English. I then took the Python library R and basically translated or augmented the
+tiny stories data set into pirate speak. After that it was time to create our dictionary of tokens.
+For that I used BPE and the hugging phase tokenizer library to basically create our dictionary
+of 8,000 tokens. Okay, so I'm currently creating the tokenizer. It's actually really, really,
+really quick and simple. I didn't expect it to be like that. But all I did was I imported tokenizer.
+This is like a hugging phase library and I imported BPE as the model for tokenizing and yeah.
+And then I just did this in batches and I saved it. So now we can actually look at our pirate BPE Jason
+and see what we have. Okay, so here are as you can see the codes for every, you know,
+like this is basically the token for end for text and this is the token for the exclamation mark and
+all of that. And this just then goes over and gives basically one token per, you know, per,
+I guess word. There's some words here which are I guess a bit weird. I don't know. Let's try to find
+a hoi. Okay, there are, this is a hoi, I guess. I don't know why there's a gene in front.
+I guess this has to do with the tokenizer that we used. But yeah, very interesting.
+Once we completed our dictionary, we would then have to basically augment the tiny stories
+data set with our dictionary to tokenize it so that all of the tiny stories would basically be then,
+you know, just numbers which we can then, you know, input in a sequence for our LLM. Out of this,
+we got around 500 million tokens in our data set which would be hopefully enough to train our model.
+I then saved it in bin files for optimization and then we went to the actual training part.
+Since I'm running this on an M1 MacBook, I can only use really MPS or CPU but not really GPU for
+training. However, that's no problem. I mean for now, it's just good enough for debugging but I
+would then just basically have to run the entire training loop on a rented server with a GPU
+in a bit. The model itself mimics very closely the GPT architecture. So we start with the sentence.
+Let's say the cat set and this we then first tokenize it like we said. So let's say this is token
+1, this is 2 and this is 3 and basically our neural network actually has a specific dimensionality.
+Okay, so for instance here we have three numbers which is basically the numerical representation of
+our sentence that we have. We can have in total in our case 256 meaning we have basically, you
+can think of as a vector which basically looks like this three because we have three input tokens
+and then 256. This is the dimensionality of our input vector. Based on the input that we gave,
+we first actually create embeddings out of this and embeddings are basically just you can think of
+as more semantic meaning into the words in this case the numbers that we have. So if you've ever
+actually looked into a rag retrieval augmented generation. If you have here the word cat and the
+word dog those might be more closer in vector space. So imagine these are like in a 2D plane
+then maybe the word mountain. As you can see mountain is a lot further away than cat and dog.
+And so basically we have to try to get this out of the input sentence the cat sat.
+Right? So we basically create embeddings out of this. In our case the embeddings that we created
+have a dimensionality of 364. So we now basically have you can think of in a way I mean
+simplified we have here a vector if you will you know of the dimensionality that has like three
+dimensions right. And the dimensionality is 356 and 364. So we're now on three dimensions already
+now okay. Now the thing that we do next actually is we put this into transformer blocks
+which basically try to get the positional meaning and understanding of each. So let me show you
+what this means. If we have here the cat sat then basically the word the just is for itself
+but the word cat you know gets the previous token and itself. And then the word sat also gets the
+two previous tokens and also it gets itself. This is actually how we basically try to teach
+a neural network the the meaning of a sequence itself you know. This is not just good for text as
+you can see where each word actually depends on each other you know because we don't you know
+there's a clear difference between the cat sat and sat the cat right. Now a neural network normally
+would actually think that these two are the same but our language is actually a bit more complicated
+than that and that's why we need positional understanding of you know how each word basically
+interacts with each other. In our case we have six of these transformer blocks okay these are
+called transformers and that is where the T and GPT comes from generative pre-trained transformers.
+Now after this basically we want as an output a probability list from our dictionary. So let's say
+we have the words so let's say we have something like this where this is you know like a subset of
+our dictionary that we actually created before. Now what we want to do is we want to give each single
+value of the dictionary a you know a probability of the chance that this is the next word so we're
+trying to basically predict the next sequence of the text the cat sat on sorry the cat sat. So this
+means that the output is actually a huge list in our case with about 8000 you know tokens in our
+dictionary because this is how much we basically set in the beginning if you remember of how many tokens
+we want in our dictionary. Now let's say this has 30% and this has maybe 1% and this has maybe
+0.5% and so on and this is actually here's maybe just a quick side note this is a very special token
+this means end of sentence and this basically shows the LLM when the sentence is basically done
+and all of these probabilities have to add up to of course 100% you know so we basically have
+a list of 8000 tokens with a probability of all of them and this is hopefully simply explained
+how the GPT or in this case in our case the nano GPT based on Kaparti works to have a neural network
+understand and predict language and basically once we then say okay on it has the highest
+percentage so this becomes the cat sat on we then have this as the input of the whole thing
+again and then we just put it through everything and then we try to predict the next word which is
+maybe on a and then the next word would be matte for instance so yeah I hope this explains it
+well if you didn't understand it this is my failure to explain it well enough maybe I'll make a
+follow-up video to explain this in more detail if there's interest so after implementing the
+architecture that I just try to explain I ended the day by just basically uploading it off camera
+onto GitHub and creating a public repo and I also just quickly added functionality for checkpoints
+to be saved automatically on on hugging face and also waits and biases for a bit more of explainability
+while it's training and yeah after this I then basically had to go and it was a pre-productive
+morning and so I got fully ready to run the GPU server once I came back at night okay so I'm
+finally so I finally actually started the whole training loop and it's running now on a GPU
+on best AI as you can see I SSH into it and yeah so every couple of steps it's like here every
+thousand steps it actually uploads this to hugging face so that we don't hopefully lose any progress
+and also I am using here waits and biases to just you know see what's happening you know
+on the fly as you can see the training the the loss is going down which is good right I mean here's
+for the mini batch loss and here for the loss of the entire thing as you can see here like here is
+the iterations down here and here we can see it going down so this I will actually monitor and I can
+also look at things like here the system you know like the GPU fan running and all of that and yeah
+so I'm excited to look back soon I mean it's already 22 you know it's a bit late now but I'm looking
+forward to look back you know hopefully before I go to sleep but if not maybe tomorrow in the
+morning but I hope before I go to sleep actually because you know I am paying by the hour for the
+GPU and I don't want to waste any money but yeah that's basically it we're running now our training
+data and the training loop on our GPT model to hopefully get a good base model which we can then
+you know fine tune into into our liking yeah okay so it just finished training it actually really
+didn't take long at all which makes me very suspicious of how good it actually is but let's actually
+try to use it and to do that I have here a sample make a target so let's try it okay so here
+are the samples three samples ahoy I'm sorry be okay Lily says no I'm okay be okay yes I'm okay you
+made me fall the man said I'm okay okay I guess a lot of people are okay what's the second sample
+here ahoy two people were walking through the woods batting down the hatches you know it's crazy
+this is actually an LLM like we really created an LLM out of like pirates speak this is actually
+really crazy okay let's let's try something else let's see if it can auto complete the sentence
+the capital of France is okay so it doesn't seem like it knows what the capital of France is
+which makes sense I mean we just used you know like the tiny stories data sets right it is no idea
+you know about geographical stuff and all that I mean maybe if we would have put in some Wikipedia
+data it could have found that out but yeah we created our I guess auto complete model yeah now I'm
+going to stop here for today and we'll see what we can continue tomorrow we now have a base
+model and it somewhat understands English grammar and syntax however it still is a glorified auto
+so the next step is basically to train the chatbot like we mentioned before on a subset of additional
+data which hopefully teaches the chatbot how to interact in a conversation so to begin fine tuning
+I first had to find a actual data set that would be that would have question and answer pairs or
+some sort of conversation in it and I did find one on GitHub actually with about 15,000 rows of
+question and answer pairs which actually like in the answers they have already pirate speak in
+it I think it was called the Dali data set so I took that and I then tokenized it again with
+our dictionary so that you know it's consistent with that and then I fine tuned our model again on
+a GPU a rented GPU on best AI for a total of about I don't know like one hour or one and a half
+hours or so and the fine tuning itself had a lot smaller of a learning rate because I didn't want
+to disturb the base model all too much with this and yeah I then again saved it on hugging face
+the checkpoints and then I was able to actually test it out okay so it just finished actually the
+SFT just finished and we can now try it out this is the first time that I'm trying it out and I just
+asked how are you doing okay I guess it's kind of answering but not the way that I thought how are
+you doing your sister be watching over you she be very kind and loving yo ho ho okay I'm guessing not
+exactly what I thought of is as an instruct alarm but yeah I guess this is all very much on budget
+still crazy to see that that this kind of still works maybe I should talk the way it talks tell
+me a story matey let's see here I have a secret the booty of the booty and the ancient booty on
+okay the booty be the booty sore the mysterious booty okay I guess it really likes booties
+but yeah I guess this is kind of the chatbot and now we can look into creating it into a more
+nicer implementation and see what we can do there now the main implementation is here by actually
+complete but I still want to take it a bit further and you know package it a bit nicer so I went on
+and I proceeded to actually you know try to make a logo and a name out of it like I after going
+you know here and there with some names I then stuck with the name nano beard you know it's
+referencing basically black beard and for the logo some of you were complaining that I used
+Gpt for the mascot of my language so instead I thought okay let me this time actually really try
+to you know make this myself and I got reminded actually of a game that I used to play when I was
+smaller called pixel piracy you know I don't know maybe I was like 12 years old or something like
+that but it was basically like the small indie game where you actually have to command like a
+troop of pirates you know and so I tried to go with a style like that where I made like a pixel art
+logo of basically black beard I just tried to make black beard in pixel art and then to finish
+everything off I wanted to actually put this into a hugging face space which if you don't know you
+can actually host like some darker images and all of that in your own models on on hugging face
+itself without having you know to create your own website and all that and that was for me just
+you know like the better short term option because you can literally just rent a CPU on there
+which I just did because our model is so small we don't need any GPUs to actually run it on
+so I created a small environment like a chat environment for us to basically then test it out
+I basically created like small chat environment with a radio to test out and basically talk with
+our chatbot so yeah without further ado here's the finished product there once was a ship that put
+to see and the name of the ship was the Billy of T the winds blew up her bow dipped down blow my
+bully boys blow huh she had not been two weeks from shore when down on her right whale bore the captain
+called all hands and swore he'd take that whale and toe soon may the wellerman come to bring a
+sugar and tea and rum one day when the tongue and is done we'll take our leave and go soon may the
+wellerman come to bring a sugar and tea and rum one day when the tongue and is done we'll take
+our leave and go so yeah that was the end of this project I hope you enjoyed listening or or
+also learn something if you're still here that should hopefully indicate that you did actually
+enjoy it or I liked it or you just forgot to just close the video while you were doing something
+else either way thank you if you made it this far bye

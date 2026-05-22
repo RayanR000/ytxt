@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, Dict
 
 def transcribe_audio(audio_path: Path, model_size: str = "base") -> List[Dict]:
-    """Transcribes audio using faster-whisper."""
+    """Transcribes audio using faster-whisper on CPU."""
     model = WhisperModel(model_size, device="cpu", compute_type="int8")
     segments, info = model.transcribe(str(audio_path), beam_size=5)
     
