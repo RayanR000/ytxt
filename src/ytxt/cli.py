@@ -2,11 +2,23 @@ import argparse
 import sys
 import hashlib
 import re
+import shutil
 from pathlib import Path
 from .downloader import download_audio
 from .transcriber import transcribe_audio
 from .formatter import format_transcript
 from .cache import read_cache, write_cache
+
+def check_dependencies():
+    """Verify that system dependencies are installed."""
+    if not shutil.which("ffmpeg"):
+        print("Error: 'ffmpeg' not found on your system.", file=sys.stderr)
+        print("ytxt requires ffmpeg to extract audio from videos.", file=sys.stderr)
+        print("\nInstallation help:", file=sys.stderr)
+        print("  macOS:  brew install ffmpeg", file=sys.stderr)
+        print("  Linux:  sudo apt install ffmpeg", file=sys.stderr)
+        print("  Windows: Download from https://ffmpeg.org/download.html", file=sys.stderr)
+        sys.exit(1)
 
 def parse_args():
     parser = argparse.ArgumentParser(description="ytxt: Local YouTube transcript CLI")
@@ -21,6 +33,7 @@ def parse_args():
     return parser.parse_args()
 
 def main():
+    check_dependencies()
     args = parse_args()
     
     input_path = Path(args.url)
