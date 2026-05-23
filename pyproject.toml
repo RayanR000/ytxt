@@ -8,14 +8,22 @@ version = "0.1.0"
 authors = [
   { name="Rayan Rane" },
 ]
-description = "Local YouTube transcript CLI"
+description = "Local audio and YouTube transcription CLI"
 readme = "README.md"
 requires-python = ">=3.7"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
 dependencies = [
     "yt-dlp",
     "faster-whisper",
-    "argparse",
 ]
+
+[project.urls]
+"Homepage" = "https://github.com/rayanrane/ytxt"
+"Bug Tracker" = "https://github.com/rayanrane/ytxt/issues"
 
 [project.scripts]
 ytxt = "ytxt.cli:main"
