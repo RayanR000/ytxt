@@ -47,6 +47,15 @@ ytxt <url> | llm "Summarize this transcript for a technical audience"
 ytxt <url> --format json | jq '.[].text'
 ```
 
+## Data Pipelines & Automation
+
+`ytxt` is designed to be a "high-signal" component in your data infrastructure. Because status logs are routed to `stderr`, the `stdout` remains clean for programmatic use.
+
+- **RAG Pipelines:** Use `ytxt` as an ingestion layer to feed YouTube transcripts directly into vector databases like Pinecone or Chroma.
+- **AI Agents:** Pipe transcripts directly into LLMs for summarization, sentiment analysis, or entity extraction.
+- **Subtitles:** Generate industry-standard `.srt` files for video editing workflows.
+- **Scheduled Jobs:** Run `ytxt` in a cron job or GitHub Action to monitor and transcribe new videos from a playlist.
+
 ## Library Usage
 
 `ytxt` is designed to be imported into your own Python automation scripts.
