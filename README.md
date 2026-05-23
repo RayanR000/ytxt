@@ -4,16 +4,18 @@
 
 ## Installation
 
-Ensure you have `ffmpeg` installed on your system. Then, install the project:
+Ensure you have `ffmpeg` installed on your system. Then install `ytxt`:
 
 ```bash
-pip install .
+pip install ytxt
 ```
 
-Alternatively, if you are running from the source:
+Alternatively, to install from source:
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/RayanR000/ytxt.git
+cd ytxt
+pip install -e .
 ```
 
 ## Usage
