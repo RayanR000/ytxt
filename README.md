@@ -13,7 +13,7 @@
 - **High Performance:** Powered by `faster-whisper` (CTranslate2), which is up to 4x faster than OpenAI's original implementation.
 - **Battery Included:** Handles downloading, audio extraction (`ffmpeg`), and transcription in one command.
 - **Smart Caching:** Avoid redundant computations. `ytxt` hashes inputs to skip re-transcribing files you've already processed.
-- **Universal:** Supports [1,000+ sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md) via `yt-dlp`.
+- **Universal:** Supports [1,000+ sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md) including **YouTube, Spotify (Podcasts), and SoundCloud** via `yt-dlp`.
 
 ## Installation
 
