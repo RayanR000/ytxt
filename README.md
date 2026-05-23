@@ -1,54 +1,87 @@
 # ytxt
 
-`ytxt` is a local, private CLI tool for transcribing audio from YouTube, web URLs, or local files using `faster-whisper`. All processing happens securely on your machine—no external APIs or cloud services required.
+**Local-first, privacy-focused transcription CLI.** 
+
+`ytxt` is a developer-centric tool for transcribing audio from YouTube, web URLs, or local files. It bridges the gap between `yt-dlp` and `faster-whisper`, providing a seamless, automated pipeline that runs entirely on your machine.
+
+[![PyPI version](https://badge.fury.io/py/ytxt.svg)](https://badge.fury.io/py/ytxt)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Why ytxt?
+
+- **Zero-Cloud Privacy:** No data leaves your machine. Perfect for sensitive meetings or private research.
+- **High Performance:** Powered by `faster-whisper` (CTranslate2), which is up to 4x faster than OpenAI's original implementation.
+- **Battery Included:** Handles downloading, audio extraction (`ffmpeg`), and transcription in one command.
+- **Smart Caching:** Avoid redundant computations. `ytxt` hashes inputs to skip re-transcribing files you've already processed.
+- **Universal:** Supports [1,000+ sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md) via `yt-dlp`.
 
 ## Installation
 
-Ensure you have `ffmpeg` installed on your system. Then install `ytxt`:
+Requires `ffmpeg` installed on your system.
 
 ```bash
+# Using pip
 pip install ytxt
+
+# Using uv (recommended for speed)
+uv tool install ytxt
 ```
 
-Alternatively, to install from source:
+## Quick Start (CLI)
+
+Transcribe any YouTube video to Markdown with timestamps:
 
 ```bash
-git clone https://github.com/RayanR000/ytxt.git
+ytxt "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --format markdown --timestamps --output transcript.md
+```
+
+### Power User Tricks
+
+**Pipe to an LLM for summarization:**
+```bash
+ytxt <url> | llm "Summarize this transcript for a technical audience"
+```
+
+**Extract metadata with `jq`:**
+```bash
+ytxt <url> --format json | jq '.[].text'
+```
+
+## Library Usage
+
+`ytxt` is designed to be imported into your own Python automation scripts.
+
+```python
+from ytxt import download_audio, transcribe_audio
+
+# 1. Download & Extract
+audio_path = download_audio("https://youtube.com/...")
+
+# 2. Transcribe Locally
+transcript = transcribe_audio(audio_path, model_size="medium")
+
+# 3. Use the result (list of dicts with 'start', 'end', 'text')
+for segment in transcript:
+    print(f"[{segment['start']}] {segment['text']}")
+```
+
+## Configuration
+
+| Option | Description | Default |
+| :--- | :--- | :--- |
+| `--model` | Whisper model size (`tiny`, `base`, `small`, `medium`, `large-v3`) | `base` |
+| `--format` | Output format (`text`, `markdown`, `srt`, `json`) | `text` |
+| `--timestamps` | Include timestamps in text/markdown output | `False` |
+| `--no-cache` | Force re-transcription by ignoring cache | `False` |
+
+## Development
+
+```bash
+git clone https://github.com/rayanrane/ytxt.git
 cd ytxt
 pip install -e .
 ```
 
-## Usage
+## License
 
-Basic usage:
-```bash
-ytxt <url_or_local_file_path>
-```
-
-### Options
-
-- `--format [text|markdown|srt|json]`: Specify output format.
-- `--model [base|small|medium|large]`: Choose the Whisper model size.
-- `--timestamps`: Include start and end times in text/markdown output.
-- `--output <path>`: Save the transcript to a file.
-- `--no-cache`: Force a re-transcription by ignoring existing cache.
-
-### Examples
-
-**Transcribe a web URL (YouTube or other):**
-```bash
-ytxt https://www.example.com/audio.mp3 --format markdown --timestamps --output transcript.md
-```
-
-**Transcribe a local audio file:**
-```bash
-ytxt path/to/audio.mp3 --model medium --output transcript.txt
-```
-
-## Features
-
-- **Local-Only:** Privacy-first; no data leaves your machine.
-- **Universal Support:** Transcribe YouTube videos, web audio URLs, and local files.
-- **Caching:** Efficiently caches results to avoid redundant work.
-- **Formats:** Supports text, Markdown, SRT, and JSON.
-- **Model Selection:** Flexibility to balance accuracy and performance by choosing your desired Whisper model size.
+MIT

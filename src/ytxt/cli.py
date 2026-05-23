@@ -14,6 +14,7 @@ def parse_args():
     parser.add_argument("--output", help="Output file path")
     parser.add_argument("--format", choices=["text", "markdown", "srt", "json"], default="text", help="Output format")
     parser.add_argument("--model", default="base", help="Whisper model to use")
+    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto", help="Device to use for computation")
     parser.add_argument("--timestamps", action="store_true", help="Include timestamps in output")
     parser.add_argument("--no-cache", action="store_true", help="Skip cache usage")
     
@@ -29,7 +30,7 @@ def main():
         audio_file = input_path
         # Use absolute path for consistent cache key
         cache_key = hashlib.md5(str(input_path.absolute()).encode()).hexdigest()
-        print(f"Using local file: {input_path}")
+        print(f"Using local file: {input_path}", file=sys.stderr)
     else:
         # It's a URL
         # Use URL as cache key for web sources
@@ -40,13 +41,13 @@ def main():
         if not args.no_cache:
             transcript = read_cache(cache_key)
             if transcript:
-                print("Using cached transcript...")
+                print("Using cached transcript...", file=sys.stderr)
         
         if not transcript:
-            print(f"Downloading audio from {args.url}...")
+            print(f"Downloading audio from {args.url}...", file=sys.stderr)
             audio_file = download_audio(args.url)
-            print("Transcribing...")
-            transcript = transcribe_audio(audio_file, args.model)
+            print("Transcribing...", file=sys.stderr)
+            transcript = transcribe_audio(audio_file, args.model, args.device)
             write_cache(cache_key, transcript)
             # Cleanup temp file
             if audio_file.exists():
@@ -57,8 +58,8 @@ def main():
 
     # Ensure transcript is loaded (from file transcription or cached/downloaded)
     if 'transcript' not in locals():
-        print("Transcribing...")
-        transcript = transcribe_audio(audio_file, args.model)
+        print("Transcribing...", file=sys.stderr)
+        transcript = transcribe_audio(audio_file, args.model, args.device)
     
     output = format_transcript(transcript, args.format, args.timestamps)
     
@@ -66,7 +67,7 @@ def main():
         out_path = Path(args.output)
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text(output)
-        print(f"Transcript saved to {out_path}")
+        print(f"Transcript saved to {out_path}", file=sys.stderr)
     else:
         print(output)
 
