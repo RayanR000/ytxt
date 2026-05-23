@@ -1,31 +1,42 @@
 Metadata-Version: 2.4
 Name: ytxt
 Version: 0.1.0
-Summary: Local YouTube transcript CLI
+Summary: Local audio and YouTube transcription CLI
 Author: Rayan Rane
+License: MIT
+Project-URL: Homepage, https://github.com/rayanrane/ytxt
+Project-URL: Bug Tracker, https://github.com/rayanrane/ytxt/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
 Requires-Dist: yt-dlp
 Requires-Dist: faster-whisper
-Requires-Dist: argparse
 
 # ytxt
 
-A local, private CLI tool for transcribing YouTube videos using `faster-whisper`. No external APIs, all processing happens on your machine.
+`ytxt` is a local, private CLI tool for transcribing audio from YouTube, web URLs, or local files using `faster-whisper`. All processing happens securely on your machine—no external APIs or cloud services required.
 
 ## Installation
+
+Ensure you have `ffmpeg` installed on your system. Then, install the project:
+
+```bash
+pip install .
+```
+
+Alternatively, if you are running from the source:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-*Note: You must have `ffmpeg` installed on your system for audio extraction.*
-
 ## Usage
 
 Basic usage:
 ```bash
-python src/main.py <youtube_url>
+ytxt <url_or_local_file_path>
 ```
 
 ### Options
@@ -38,19 +49,20 @@ python src/main.py <youtube_url>
 
 ### Examples
 
-**Save as Markdown with timestamps:**
+**Transcribe a web URL (YouTube or other):**
 ```bash
-python src/main.py https://www.youtube.com/watch?v=VIDEO_ID --format markdown --timestamps --output transcript.md
+ytxt https://www.example.com/audio.mp3 --format markdown --timestamps --output transcript.md
 ```
 
-**Get SRT for subtitles:**
+**Transcribe a local audio file:**
 ```bash
-python src/main.py https://www.youtube.com/watch?v=VIDEO_ID --format srt --output subtitles.srt
+ytxt path/to/audio.mp3 --model medium --output transcript.txt
 ```
 
 ## Features
 
-- **Local-Only:** No data leaves your machine.
-- **Caching:** Automatically caches transcripts by video ID.
+- **Local-Only:** Privacy-first; no data leaves your machine.
+- **Universal Support:** Transcribe YouTube videos, web audio URLs, and local files.
+- **Caching:** Efficiently caches results to avoid redundant work.
 - **Formats:** Supports text, Markdown, SRT, and JSON.
-- **Configurable:** Choose your own model and output destination.
+- **Model Selection:** Flexibility to balance accuracy and performance by choosing your desired Whisper model size.
