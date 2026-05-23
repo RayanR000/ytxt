@@ -1,15 +1,28 @@
+# Virtual environments
 .venv/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Build
+dist/
+build/
+
+# OS
 .DS_Store
+
+# Temp
 *.tmp
 temp/
+cache/
 transcripts/
